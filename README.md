@@ -1,30 +1,27 @@
-# Clínica VitaSaúde - Landing Page Institucional
+# clinicalexample
 
-Landing Page institucional e catálogo interativo para clínicas médicas e de diagnóstico, desenvolvida em arquivo único (`index.html`) com foco em performance, acessibilidade e design limpo.
+Landing page para clínica médica em arquivo único (`index.html`), com catálogo de especialidades e exames com busca e filtros em tempo real via Vanilla JS.
 
-## 🚀 Tecnologias
+## Estrutura
 
-- **HTML5 Semântico**: Estrutura acessível com conformidade a leitores de tela e padrões W3C.
-- **CSS Moderno**: Variáveis CSS (Custom Properties), tipografia Public Sans e design mobile-first responsivo.
-- **Vanilla JavaScript**: Filtro de busca em tempo real com normalização de acentos, manipulação dinâmica do catálogo e cálculo de status de funcionamento (aberto/fechado).
+- **Arquivo único**: HTML, CSS e JavaScript puros, sem bundlers, frameworks ou dependências de build.
+- **Catálogo de serviços**: busca em tempo real (ignora acentos) e filtro por categoria (consultas, exames, procedimentos e check-ups).
+- **Horário de funcionamento**: script em Vanilla JS calcula automaticamente se a recepção está aberta ou fechada com base no fuso horário de São Paulo.
+- **Links para WhatsApp**: cada serviço gera um link direto para a recepção com mensagem já contextualizada.
 
-## 🩺 Funcionalidades
+## Como rodar
 
-- **Indicador de Horário em Tempo Real**: Verifica automaticamente o fuso horário de São Paulo e informa se a recepção está aberta ou o próximo horário de abertura.
-- **Guia Interativo de Consultas & Exames**:
-  - Busca instantânea por termo, sintomas ou especialidade.
-  - Filtros por categoria (Consultas Médicas, Exames Diagnósticos, Procedimentos, Check-ups).
-  - Indicador de preparo e tags com orientações práticas.
-  - Link direto para atendimento no WhatsApp com mensagem pré-preenchida.
-- **Corpo Clínico**: Apresentação dos médicos especialistas com dados de CRM/RQE e dias de atendimento.
-- **Localização & Mapa**: Integração com Google Maps e dados de transporte/estacionamento.
-- **Compliance Médico**: Rodapé com dados de direção técnica, registro CRM/RQE e alvará sanitário.
-- **Botão Flutuante de WhatsApp**: Acesso rápido para agendamentos.
+Abra o arquivo `index.html` diretamente no navegador ou inicie um servidor local:
 
-## ⚙️ Como Customizar
+```bash
+python3 -m http.server 8000
+# ou
+npx serve .
+```
 
-Todos os dados da clínica (nome, telefone, WhatsApp, endereço, horário e catálogo) podem ser facilmente editados no objeto `CLINICA_CONFIG` e no array `catalogo` ao final de `index.html`.
+## Como personalizar
 
-## 📄 Licença
+Toda a parametrização é feita diretamente no script ao final do `index.html`:
 
-Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
+- `CLINICA_CONFIG`: nome da clínica, telefones, WhatsApp, horários, endereço, e-mail e responsável técnico (CRM/RQE).
+- `catalogo`: lista de serviços com título, categoria, descrição, orientação de preparo e palavras-chave para a busca.
