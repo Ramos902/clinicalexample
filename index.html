@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clínica VitaSaúde | Consultas e exames na Av. Paulista</title>
+  <meta name="description" content="Consultas médicas particulares e por convênio, exames laboratoriais e ultrassonografia na Av. Paulista. Agende pelo WhatsApp.">
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230f4c45'><path d='M19 10.5h-5.5V5a1.5 1.5 0 0 0-3 0v5.5H5a1.5 1.5 0 0 0 0 3h5.5V19a1.5 1.5 0 0 0 3 0v-5.5H19a1.5 1.5 0 0 0 0-3z'/></svg>">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f4f7f5;
+      --ink: #16231f;
+      --muted: #4e5e58;
+      --line: #d6deda;
+      --accent: #0f4c45;
+      --accent-hover: #0a3832;
+      --accent-2: #e8793a;
+      --tint: #e6f2ee;
+      --wa: #0e7a3f;
+      --wa-hover: #0a5f31;
+      --c-consulta: #0f6b5f;
+      --c-exame: #20638f;
+      --c-proc: #b34a14;
+      --c-check: #7a3b69;
+      --radius: 8px;
+      --radius-sm: 4px;
+      --page: 68rem;
+      --shadow-sm: 0 1px 3px rgba(15, 76, 69, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-card: 0 4px 12px rgba(15, 76, 69, 0.07);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+    body {
+      margin: 0;
+      font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--ink);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, p, dl, dd, ul, ol { margin: 0; }
+    h1, h2, h3, h4 { line-height: 1.2; letter-spacing: -0.015em; color: var(--ink); }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+    .wrap { max-width: var(--page); margin: 0 auto; padding: 0 1.25rem; }
+    section { padding: 4.5rem 0; }
+    section + section { border-top: 1px solid var(--line); }
+    .hero + section { border-top: 0; }
+    h2 { font-size: clamp(1.6rem, 3.2vw, 2.15rem); font-weight: 700; }
+    .lede { color: var(--muted); max-width: 62ch; margin-top: 0.75rem; font-size: 1.05rem; }
+
+    /* Faixa de Notificação / Plantão */
+    .top-strip {
+      background: #092c27;
+      color: #d1e5e0;
+      font-size: 0.85rem;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid #14443e;
+    }
+    .top-strip .wrap {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem 1.5rem;
+    }
+    .top-strip span { display: inline-flex; align-items: center; gap: 0.4rem; }
+    .top-strip a { color: #fff; font-weight: 600; text-decoration: none; }
+    .top-strip a:hover { text-decoration: underline; }
+
+    /* Botões */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      font: inherit; font-weight: 600; text-decoration: none; cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+    .btn-wa { background: var(--wa); color: #fff; }
+    .btn-wa:hover { background: var(--wa-hover); }
+    .btn-line { border-color: var(--ink); background: transparent; color: var(--ink); }
+    .btn-line:hover { background: var(--surface); }
+    .btn svg { width: 1.15em; height: 1.15em; fill: currentColor; flex: none; }
+
+    /* Cabeçalho */
+    header {
+      position: sticky; top: 0; z-index: 20;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    .bar {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 0.5rem 1.5rem; padding-top: 0.85rem; padding-bottom: 0.85rem;
+    }
+    .brand-group { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .brand-icon {
+      width: 2.25rem; height: 2.25rem; border-radius: var(--radius-sm);
+      background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center;
+    }
+    .brand-icon svg { width: 1.3rem; height: 1.3rem; fill: currentColor; }
+    .brand-text { display: flex; flex-direction: column; }
+    .brand { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); line-height: 1.1; }
+    .brand-sub { font-size: 0.75rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+
+    nav { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; font-weight: 600; font-size: 0.95rem; }
+    nav a { text-decoration: none; padding: 0.25rem 0; border-bottom: 2px solid transparent; color: var(--muted); }
+    nav a:hover { border-bottom-color: var(--accent); color: var(--ink); }
+    .bar .btn { padding: 0.5rem 1rem; font-size: 0.9rem; }
+    @media (max-width: 760px) {
+      nav { order: 3; width: 100%; padding-top: 0.5rem; border-top: 1px solid var(--line); gap: 0.5rem 1rem; font-size: 0.9rem; }
+    }
+
+    /* Hero */
+    .hero { padding: 4.5rem 0 5rem; background: var(--accent); color: #fff; border-bottom: 6px solid var(--accent-2); position: relative; overflow: hidden; }
+    .hero .wrap { position: relative; z-index: 1; display: grid; gap: 3rem; align-items: start; }
+    @media (min-width: 880px) { .hero .wrap { grid-template-columns: 1.4fr 1fr; } }
+    .hero h1 { font-size: clamp(2.1rem, 5.2vw, 3.3rem); font-weight: 800; max-width: 17ch; color: #fff; }
+    .hero .lede { color: #d6e8e4; font-size: 1.125rem; margin-top: 1.25rem; }
+    .hero-plus { position: absolute; right: -4rem; top: -3rem; width: 26rem; max-width: 70vw; opacity: .85; }
+    .hero-ecg { position: absolute; left: 0; right: 0; bottom: 0.5rem; width: 100%; height: 5rem; }
+    .hero-ecg path { fill: none; stroke: var(--accent-2); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; opacity: .85;
+      stroke-dasharray: 1; stroke-dashoffset: 1; animation: ecg 2.4s ease-out .3s forwards; }
+    @keyframes ecg { to { stroke-dashoffset: 0; } }
+    @media (prefers-reduced-motion: reduce) { .hero-ecg path { animation: none; stroke-dashoffset: 0; } }
+
+    .hero .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+    .hero .btn-wa { background: #32d67d; color: #042417; font-weight: 700; box-shadow: 0 4px 12px rgba(50, 214, 125, 0.3); }
+    .hero .btn-wa:hover { background: #4de691; }
+    .hero .btn-line { border-color: rgba(255,255,255,0.7); color: #fff; }
+    .hero .btn-line:hover { background: rgba(255,255,255,.12); border-color: #fff; }
+
+    .hero-quick-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
+    .hero-tag {
+      font-size: 0.8rem; font-weight: 600; padding: 0.3rem 0.65rem; border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.12); color: #eaf4f1; border: 1px solid rgba(255,255,255,0.2);
+      display: inline-flex; align-items: center; gap: 0.35rem;
+    }
+
+    .panel { background: var(--bg); color: var(--ink); border-radius: var(--radius); padding: 1.75rem; border-top: 6px solid var(--accent-2); box-shadow: var(--shadow-card); }
+    .panel h2 { font-size: 1.15rem; margin-bottom: 0.75rem; font-weight: 700; }
+    .status { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 0.9rem; margin-bottom: 1.25rem; }
+    .status::before { content: ""; width: 0.65rem; height: 0.65rem; border-radius: 50%; background: #8a9692; flex: none; }
+    .status[data-open="true"]::before { background: #1fa65a; box-shadow: 0 0 0 4px #d8f1e3; }
+    .facts div + div { margin-top: 0.9rem; }
+    .facts dt { font-weight: 600; font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
+    .facts dd { font-size: 1.05rem; font-weight: 500; margin-top: 0.1rem; }
+    .facts a { text-decoration-thickness: 1px; text-underline-offset: 3px; color: var(--accent); font-weight: 600; }
+
+    /* Catálogo de Consultas e Exames */
+    .search-box { position: relative; margin-top: 1.75rem; }
+    .search {
+      display: block; width: 100%;
+      padding: 0.9rem 1rem 0.9rem 2.75rem;
+      font: inherit; font-size: 1rem;
+      color: var(--ink);
+      background: var(--bg);
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      transition: border-color 0.15s ease;
+    }
+    .search:focus { outline: none; border-color: var(--accent); }
+    .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.15rem; height: 1.15rem; fill: var(--muted); pointer-events: none; }
+    .search::placeholder { color: #6e7f78; }
+
+    .filters { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin-top: 1.25rem; border-bottom: 2px solid var(--line); }
+    .filters button {
+      font: inherit; font-weight: 600; font-size: 0.95rem; color: var(--muted);
+      background: none; border: 0; border-bottom: 3px solid transparent;
+      padding: 0.65rem 0.25rem; margin-bottom: -2px; cursor: pointer;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+    .filters button:hover { color: var(--ink); }
+    .filters button[aria-pressed="true"] { color: var(--accent); border-bottom-color: var(--accent-2); font-weight: 700; }
+    .count { margin-top: 1rem; font-size: 0.9rem; color: var(--muted); font-weight: 500; }
+
+    .list { margin-top: 0.75rem; display: grid; gap: 0.75rem; }
+    .item {
+      --cat: var(--c-consulta);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-left: 6px solid var(--cat);
+      border-radius: var(--radius);
+      padding: 1.35rem 1.5rem;
+      display: grid; gap: 1rem; align-items: center;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+    .item:hover { box-shadow: var(--shadow-card); border-color: #b5c7c0; }
+    @media (min-width: 760px) { .item { grid-template-columns: 1fr auto; gap: 2rem; } }
+    .item .cat { margin: 0 0 0.35rem; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--cat); }
+    .item h3 { font-size: 1.2rem; font-weight: 700; }
+    .item p.desc { margin-top: 0.35rem; max-width: 62ch; color: #374741; font-size: 0.95rem; }
+    
+    .item .badges-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
+    .item .badge {
+      font-size: 0.78rem; font-weight: 600; padding: 0.25rem 0.55rem;
+      border-radius: var(--radius-sm); background: var(--surface); color: #2e433d; border: 1px solid var(--line);
+    }
+    .item .badge.highlight { background: var(--tint); color: var(--accent); border-color: #b5dfd6; font-weight: 700; }
+    .item .btn-line { border-color: var(--accent); color: var(--accent); font-size: 0.9rem; padding: 0.6rem 1rem; white-space: nowrap; }
+    .item .btn-line:hover { background: var(--accent); color: #fff; }
+
+    .empty { padding: 3rem 1.5rem; text-align: center; background: var(--surface); border-radius: var(--radius); border: 2px dashed var(--line); margin-top: 1.5rem; }
+    .empty h3 { font-size: 1.2rem; }
+    .empty p { margin-top: 0.5rem; max-width: 55ch; margin-left: auto; margin-right: auto; color: var(--muted); }
+    .empty .actions { margin-top: 1.5rem; display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+    [hidden] { display: none !important; }
+
+    /* Corpo Clínico / Médicos Responsáveis */
+    .doctors-grid {
+      display: grid;
+      gap: 1.5rem;
+      margin-top: 2.25rem;
+    }
+    @media (min-width: 600px) { .doctors-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 900px) { .doctors-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .doctor-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .doctor-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .doctor-avatar {
+      width: 3.5rem; height: 3.5rem; border-radius: 50%;
+      background: var(--tint); color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1.1rem; border: 2px solid #b5ded5; flex: none;
+    }
+    .doctor-name { font-size: 1.1rem; font-weight: 700; }
+    .doctor-spec { font-size: 0.85rem; color: var(--accent); font-weight: 700; margin-top: 0.1rem; }
+    .doctor-reg { font-size: 0.8rem; color: var(--muted); font-weight: 600; margin-top: 0.15rem; }
+    .doctor-body { border-top: 1px solid var(--line); padding-top: 0.85rem; font-size: 0.88rem; color: #374741; }
+    .doctor-days { margin-top: 0.5rem; font-weight: 600; font-size: 0.8rem; color: var(--muted); }
+
+    /* Localização */
+    .where { display: grid; gap: 2.5rem; margin-top: 2rem; }
+    @media (min-width: 860px) { .where { grid-template-columns: 1fr 1.4fr; gap: 3rem; } }
+    .contact div + div { margin-top: 1.25rem; }
+    .contact dt { font-weight: 700; font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
+    .contact dd { margin-top: 0.2rem; font-size: 1rem; }
+    .contact a { text-underline-offset: 3px; color: var(--accent); font-weight: 600; }
+    .map { width: 100%; height: 22rem; border: 1px solid var(--line); border-radius: var(--radius); display: block; box-shadow: var(--shadow-sm); }
+    .map-link { margin-top: 0.75rem; display: inline-block; font-weight: 700; text-underline-offset: 3px; color: var(--accent); }
+
+    /* Rodapé */
+    footer { background: #082823; padding: 3rem 0; font-size: 0.9rem; color: #c4dcd6; border-top: 5px solid var(--accent-2); }
+    footer .wrap { display: grid; gap: 2rem; }
+    @media (min-width: 860px) { footer .wrap { grid-template-columns: 1.2fr 1fr; gap: 4rem; } }
+    footer dl div { display: flex; flex-wrap: wrap; gap: 0 0.5rem; margin-bottom: 0.35rem; }
+    footer dt { font-weight: 700; color: #fff; }
+    footer .notice { max-width: 60ch; line-height: 1.6; }
+    footer .notice + .notice { margin-top: 0.75rem; }
+    .footer-reg-badge {
+      display: inline-block; padding: 0.4rem 0.75rem; background: rgba(255,255,255,0.08);
+      border-radius: var(--radius-sm); font-size: 0.8rem; margin-top: 0.75rem;
+    }
+
+    /* Botão Flutuante de WhatsApp */
+    .floating-wa {
+      position: fixed;
+      right: 1.5rem;
+      bottom: 1.5rem;
+      z-index: 50;
+      background: var(--wa);
+      color: #fff;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.75rem 1.15rem;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 0 6px 20px rgba(14, 122, 63, 0.45);
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+    .floating-wa:hover {
+      background: #0b6434;
+      transform: translateY(-2px);
+    }
+    .floating-wa svg { width: 1.35rem; height: 1.35rem; fill: currentColor; }
+    @media (max-width: 600px) {
+      .floating-wa span { display: none; }
+      .floating-wa { padding: 0.85rem; right: 1rem; bottom: 1rem; }
+      .floating-wa svg { width: 1.5rem; height: 1.5rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ========================================================= -->
+  <!-- BARRA DE PLANTÃO E HORÁRIO SUPERIOR                       -->
+  <!-- ========================================================= -->
+  <div class="top-strip">
+    <div class="wrap">
+      <span>
+        <svg style="width:14px;height:14px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+        Segunda a sexta das 07h às 19h | Sábados das 07h às 13h
+      </span>
+      <span>
+        Recepção & WhatsApp: <a data-link="whatsapp" href="#" target="_blank" rel="noopener noreferrer"><span data-config="whatsappFormatado"></span></a>
+      </span>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 1. HEADER FIXO                                            -->
+  <!-- ========================================================= -->
+  <header>
+    <div class="wrap bar">
+      <a class="brand-group" href="#inicio">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M19 10.5h-5.5V5a1.5 1.5 0 0 0-3 0v5.5H5a1.5 1.5 0 0 0 0 3h5.5V19a1.5 1.5 0 0 0 3 0v-5.5H19a1.5 1.5 0 0 0 0-3z"/></svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand" data-config="nome">VitaSaúde</span>
+          <span class="brand-sub">Clínica Médica • Av. Paulista</span>
+        </div>
+      </a>
+
+      <nav aria-label="Navegação Principal">
+        <a href="#inicio">Início</a>
+        <a href="#especialidades">Consultas e Exames</a>
+        <a href="#equipe">Corpo Clínico</a>
+        <a href="#localizacao">Como Chegar</a>
+      </nav>
+
+      <a class="btn btn-wa" data-link="whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 14.9L2 22l5.25-1.38A9.9 9.9 0 1 0 12.04 2Zm0 18.1a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 1 1 6.97 3.85Zm4.5-6.14c-.25-.12-1.46-.72-1.69-.8-.23-.09-.39-.13-.56.12-.16.25-.64.8-.78.97-.14.16-.29.18-.54.06a6.7 6.7 0 0 1-1.97-1.22 7.4 7.4 0 0 1-1.36-1.69c-.14-.25-.02-.38.1-.5.11-.11.25-.29.37-.43.12-.15.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.42h-.47c-.16 0-.43.06-.66.31-.22.25-.86.85-.86 2.07s.88 2.4 1 2.57c.12.16 1.74 2.66 4.22 3.73.59.25 1.05.4 1.41.52.6.19 1.13.16 1.56.1.48-.07 1.46-.6 1.67-1.18.2-.58.2-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/></svg>
+        <span>Agendar Consulta</span>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ========================================================= -->
+    <!-- 2. HERO SECTION                                           -->
+    <!-- ========================================================= -->
+    <section class="hero" id="inicio">
+      <svg class="hero-plus" viewBox="0 0 200 200" aria-hidden="true" fill="none">
+        <path d="M80 10h40v70h70v40h-70v70H80v-70H10V80h70z" fill="#136257"/>
+        <path d="M80 10h40v70h70v40h-70v70H80v-70H10V80h70z" stroke="#2f857a" stroke-width="2"/>
+      </svg>
+      <svg class="hero-ecg" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true">
+        <path pathLength="1" vector-effect="non-scaling-stroke" d="M0 44H300l14-8 12 8h70l12-10 10 10h60l14-4 10 4h90l10-6 8 6h40l12-34 16 66 16-52 10 20h110l12-8 12 8h120l14-6 10 6H1200"/>
+      </svg>
+      <div class="wrap">
+        <div>
+          <h1>Consultas e exames no mesmo endereço, na Av. Paulista.</h1>
+          <p class="lede">
+            Consulta com especialista, coleta de sangue e ultrassonografia na mesma clínica. Atendimento ágil e particular com valores acessíveis na região central de São Paulo.
+          </p>
+          
+          <div class="actions">
+            <a class="btn btn-wa" data-link="whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 14.9L2 22l5.25-1.38A9.9 9.9 0 1 0 12.04 2Zm0 18.1a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 1 1 6.97 3.85Zm4.5-6.14c-.25-.12-1.46-.72-1.69-.8-.23-.09-.39-.13-.56.12-.16.25-.64.8-.78.97-.14.16-.29.18-.54.06a6.7 6.7 0 0 1-1.97-1.22 7.4 7.4 0 0 1-1.36-1.69c-.14-.25-.02-.38.1-.5.11-.11.25-.29.37-.43.12-.15.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.42h-.47c-.16 0-.43.06-.66.31-.22.25-.86.85-.86 2.07s.88 2.4 1 2.57c.12.16 1.74 2.66 4.22 3.73.59.25 1.05.4 1.41.52.6.19 1.13.16 1.56.1.48-.07 1.46-.6 1.67-1.18.2-.58.2-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/></svg>
+              Falar com a recepção no WhatsApp
+            </a>
+            <a class="btn btn-line" href="#especialidades">Ver consultas e exames</a>
+          </div>
+
+          <div class="hero-quick-tags">
+            <span class="hero-tag">✓ Laudo rápido no celular</span>
+            <span class="hero-tag">✓ Coleta de exames a partir das 7h</span>
+            <span class="hero-tag">✓ Ao lado do Metrô Trianon-Masp</span>
+          </div>
+        </div>
+
+        <aside class="panel" aria-labelledby="atendimento-titulo">
+          <h2 id="atendimento-titulo">Atendimento Hoje</h2>
+          <p class="status" id="status-aberto" data-open="false"></p>
+          <dl class="facts">
+            <div>
+              <dt>Segunda a sexta</dt>
+              <dd><span data-config="horarioSemana"></span></dd>
+            </div>
+            <div>
+              <dt>Sábado (coletas & exames)</dt>
+              <dd><span data-config="horarioSabado"></span></dd>
+            </div>
+            <div>
+              <dt>Telefone Fixo</dt>
+              <dd><a data-link="tel" href="#"><span data-config="telefoneFixo"></span></a></dd>
+            </div>
+            <div>
+              <dt>Localização</dt>
+              <dd><span data-config="enderecoCompleto"></span></dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+
+    <!-- ========================================================= -->
+    <!-- 3. GUIA INTERATIVO DE CONSULTAS E EXAMES                  -->
+    <!-- ========================================================= -->
+    <section id="especialidades">
+      <div class="wrap">
+        <h2>Consultas e exames disponíveis</h2>
+        <p class="lede">Busque por especialidade, exame ou sintomas. O botão direciona você diretamente à atendente com o item já selecionado.</p>
+
+        <div class="search-box">
+          <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <label for="search-input" class="visually-hidden" style="position:absolute;left:-9999px">Buscar consultas e exames</label>
+          <input id="search-input" class="search" type="search" autocomplete="off"
+                 placeholder="Digite um exame, médico ou sintoma (ex: ultrassom, sangue, cardiologista, dor costas)...">
+        </div>
+
+        <div class="filters" id="category-filters" role="group" aria-label="Filtrar por tipo">
+          <button type="button" data-category="Todas" aria-pressed="true">Todos os Serviços</button>
+          <button type="button" data-category="Consultas Médicas" aria-pressed="false">Consultas Médicas</button>
+          <button type="button" data-category="Exames Diagnósticos" aria-pressed="false">Exames & Ultrassom</button>
+          <button type="button" data-category="Procedimentos" aria-pressed="false">Pequenos Procedimentos</button>
+          <button type="button" data-category="Check-ups" aria-pressed="false">Check-ups Completos</button>
+        </div>
+
+        <p class="count" id="results-count" aria-live="polite"></p>
+
+        <div class="list" id="cards-grid"></div>
+
+        <div class="empty" id="no-results-state" hidden>
+          <h3>Nenhum serviço encontrado para essa busca</h3>
+          <p>Realizamos mais de 1.200 tipos de exames laboratoriais e procedimentos sob consulta. Pergunte à recepção se seu pedido médico pode ser atendido aqui.</p>
+          <div class="actions">
+            <button id="reset-filters-btn" type="button" class="btn btn-line">Limpar busca e filtros</button>
+            <a class="btn btn-wa" data-link="whatsapp" href="#" target="_blank" rel="noopener noreferrer">Tirar dúvida na recepção</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================================= -->
+    <!-- 4. CORPO CLÍNICO / MÉDICOS RESPONSÁVEIS                   -->
+    <!-- ========================================================= -->
+    <section id="equipe">
+      <div class="wrap">
+        <h2>Corpo clínico e especialistas</h2>
+        <p class="lede">Médicos com formação em centros de referência, títulos de especialista registrados e atendimento focado no paciente.</p>
+
+        <div class="doctors-grid">
+          
+          <article class="doctor-card">
+            <div>
+              <div class="doctor-header">
+                <div class="doctor-avatar">CN</div>
+                <div>
+                  <h3 class="doctor-name">Dra. Camila Nogueira</h3>
+                  <p class="doctor-spec">Ginecologia & Obstetrícia</p>
+                  <p class="doctor-reg">CRM-SP 148.920 • RQE 82.114</p>
+                </div>
+              </div>
+              <p class="doctor-body">
+                Rotina preventiva feminina, inserção de DIU, colposcopia e acompanhamento de climatério e menopausa.
+              </p>
+            </div>
+            <p class="doctor-days">📅 Terças, Quintas e Sextas</p>
+          </article>
+
+          <article class="doctor-card">
+            <div>
+              <div class="doctor-header">
+                <div class="doctor-avatar">RF</div>
+                <div>
+                  <h3 class="doctor-name">Dr. Roberto Ferreira</h3>
+                  <p class="doctor-spec">Cardiologia & Risco Cirúrgico</p>
+                  <p class="doctor-reg">CRM-SP 132.405 • RQE 69.840</p>
+                </div>
+              </div>
+              <p class="doctor-body">
+                Prevenção cardiovascular, hipertensão arterial, avaliação para cirurgias e laudos de eletrocardiograma.
+              </p>
+            </div>
+            <p class="doctor-days">📅 Segundas, Quartas e Sábados</p>
+          </article>
+
+          <article class="doctor-card">
+            <div>
+              <div class="doctor-header">
+                <div class="doctor-avatar">MA</div>
+                <div>
+                  <h3 class="doctor-name">Dr. Marcos Albuquerque</h3>
+                  <p class="doctor-spec">Ortopedia & Articulações</p>
+                  <p class="doctor-reg">CRM-SP 156.780 • RQE 88.312</p>
+                </div>
+              </div>
+              <p class="doctor-body">
+                Tratamento de dor na coluna, joelhos e tendinites. Infiltração articular com ácido hialurônico na clínica.
+              </p>
+            </div>
+            <p class="doctor-days">📅 Segundas, Terças e Quintas</p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================================= -->
+    <!-- 5. LOCALIZAÇÃO E CONTATO                                  -->
+    <!-- ========================================================= -->
+    <section id="localizacao">
+      <div class="wrap">
+        <h2>Como chegar à clínica</h2>
+        <p class="lede">A 200 metros da estação de metrô Trianon-Masp (Linha 2-Verde). Fácil acesso de ônibus, metrô ou carro.</p>
+
+        <div class="where">
+          <dl class="contact">
+            <div>
+              <dt>Endereço</dt>
+              <dd><strong data-config="enderecoCompleto"></strong><br><span data-config="cepComplemento"></span></dd>
+            </div>
+            <div>
+              <dt>WhatsApp de Agendamento</dt>
+              <dd><a data-link="whatsapp" href="#" target="_blank" rel="noopener noreferrer"><strong data-config="whatsappFormatado"></strong></a></dd>
+            </div>
+            <div>
+              <dt>Telefone Fixo</dt>
+              <dd><a data-link="tel" href="#"><span data-config="telefoneFixo"></span></a></dd>
+            </div>
+            <div>
+              <dt>Horário de Atendimento</dt>
+              <dd>Segunda a sexta: <strong data-config="horarioSemana"></strong><br>Sábados (coletas e exames): <strong data-config="horarioSabado"></strong></dd>
+            </div>
+            <div>
+              <dt>Canais Digitais</dt>
+              <dd>
+                <a data-link="mailto" href="#"><span data-config="email"></span></a><br>
+                <a data-link="instagram" href="#" target="_blank" rel="noopener noreferrer">Instagram</a> • 
+                <a data-link="facebook" href="#" target="_blank" rel="noopener noreferrer">Facebook</a>
+              </dd>
+            </div>
+          </dl>
+
+          <div>
+            <iframe class="map"
+              title="Mapa da localização da Clínica VitaSaúde na Av Paulista"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.0982542472657!2d-46.65498872379768!3d-23.564917678796856!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce59c8da0aa315%3A0xd59f9431f2c9776a!2sAv.%20Paulista%20-%20Bela%20Vista%2C%20S%C3%A3o%20Paulo%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr"
+              allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <a class="map-link" data-link="rota" href="#" target="_blank" rel="noopener noreferrer">Abrir rota direta no Google Maps →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+  <!-- ========================================================= -->
+  <!-- 6. FOOTER & COMPLIANCE MÉDICO                             -->
+  <!-- ========================================================= -->
+  <footer>
+    <div class="wrap">
+      <div>
+        <dl>
+          <div><dt>Razão Social:</dt><dd data-config="razaoSocial"></dd></div>
+          <div><dt>CNPJ:</dt><dd data-config="cnpj"></dd></div>
+          <div><dt>Diretora Técnica:</dt><dd data-config="responsavelTecnico"></dd></div>
+          <div><dt>Registro Profissional:</dt><dd data-config="crmRqe"></dd></div>
+        </dl>
+        <span class="footer-reg-badge">Alvará Sanitário CMVS 3550308 • Cadastro Nacional CNES 7843210</span>
+      </div>
+      <div>
+        <p class="notice">
+          <strong>Aviso de responsabilidade médica:</strong> O conteúdo deste site possui finalidade meramente informativa e não substitui a consulta médica presencial nem deve ser utilizado para autodiagnóstico ou automedicação. Em situações de urgência ou emergência, procure um pronto-socorro.
+        </p>
+        <p class="notice" style="margin-top:0.75rem;opacity:0.8">
+          © <span id="ano-atual"></span> <span data-config="nome"></span>. Todos os direitos reservados.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ========================================================= -->
+  <!-- 7. BOTÃO FLUTUANTE DE WHATSAPP                            -->
+  <!-- ========================================================= -->
+  <a class="floating-wa" data-link="whatsapp" href="#" target="_blank" rel="noopener noreferrer" aria-label="Falar com a recepção no WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 14.9L2 22l5.25-1.38A9.9 9.9 0 1 0 12.04 2Zm0 18.1a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 1 1 6.97 3.85Zm4.5-6.14c-.25-.12-1.46-.72-1.69-.8-.23-.09-.39-.13-.56.12-.16.25-.64.8-.78.97-.14.16-.29.18-.54.06a6.7 6.7 0 0 1-1.97-1.22 7.4 7.4 0 0 1-1.36-1.69c-.14-.25-.02-.38.1-.5.11-.11.25-.29.37-.43.12-.15.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.42h-.47c-.16 0-.43.06-.66.31-.22.25-.86.85-.86 2.07s.88 2.4 1 2.57c.12.16 1.74 2.66 4.22 3.73.59.25 1.05.4 1.41.52.6.19 1.13.16 1.56.1.48-.07 1.46-.6 1.67-1.18.2-.58.2-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/></svg>
+    <span>Falar na Recepção</span>
+  </a>
+
+
+  <!-- ========================================================= -->
+  <!-- 8. JAVASCRIPT VANILLA & CONFIGURAÇÕES                     -->
+  <!-- ========================================================= -->
+  <script>
+    /* Dados da clínica: altere facilmente aqui */
+    const CLINICA_CONFIG = {
+      nome: "VitaSaúde",
+      razaoSocial: "VitaSaúde Serviços Médicos e Diagnósticos Ltda.",
+      cnpj: "12.345.678/0001-90",
+      enderecoCompleto: "Av. Paulista, 1578, 5º andar, Bela Vista",
+      cepComplemento: "São Paulo, SP, CEP 01310-200 (ao lado do Masp)",
+      horarioSemana: "07:00 às 19:00",
+      horarioSabado: "07:00 às 13:00",
+
+      whatsappNumero: "5511987654321",
+      whatsappFormatado: "(11) 98765-4321",
+      telefoneFixo: "(11) 3344-5566",
+      telefoneFixoLink: "+551133445566",
+
+      email: "contato@vitasaude.com.br",
+      instagramUrl: "https://instagram.com",
+      facebookUrl: "https://facebook.com",
+      googleMapsRotaUrl: "https://maps.google.com/?q=Av.+Paulista,+1578+-+Bela+Vista,+S%C3%A3o+Paulo+-+SP",
+
+      responsavelTecnico: "Dra. Camila Nogueira Ribeiro",
+      crmRqe: "CRM-SP 148.920 | RQE 82.114",
+
+      mensagemPadraoWhats: "Olá! Gostaria de consultar horários disponíveis para consulta ou exame na VitaSaúde."
+    };
+
+    /* Categorias visuais do catálogo */
+    const CORES = {
+      "Consultas Médicas": "--c-consulta",
+      "Exames Diagnósticos": "--c-exame",
+      "Procedimentos": "--c-proc",
+      "Check-ups": "--c-check"
+    };
+    const ROTULOS = {
+      "Consultas Médicas": "Consulta",
+      "Exames Diagnósticos": "Exame",
+      "Procedimentos": "Procedimento",
+      "Check-ups": "Check-up"
+    };
+
+    const catalogo = [
+      {
+        titulo: "Cardiologia e eletrocardiograma",
+        categoria: "Consultas Médicas",
+        descricao: "Check-up do coração, controle de pressão alta, risco cirúrgico pré-operatório e avaliação de cansaço ou dor no peito.",
+        detalhes: ["Eletrocardiograma na hora", "Retorno incluso", "Particular R$ 150"],
+        preparo: "Sem necessidade de jejum",
+        palavrasChave: "cardiologista ecg eletro pressao hipertensao coracao arritmia infarto risco cirurgico"
+      },
+      {
+        titulo: "Ginecologia e preventivo (Papanicolau)",
+        categoria: "Consultas Médicas",
+        descricao: "Exame preventivo Papanicolau, acompanhamento de rotina, contracepção, inserção de DIU e climatério.",
+        detalhes: ["Papanicolau no local", "Consulta preventiva", "Inserção de DIU"],
+        preparo: "Evitar relações 48h antes",
+        palavrasChave: "ginecologista preventivo papanicolau mulher diu colposcopia anticoncepcional menopausa utero ovario"
+      },
+      {
+        titulo: "Ortopedia e traumatologia",
+        categoria: "Consultas Médicas",
+        descricao: "Tratamento para dor nas costas, joelhos e ombros, tendinites, entorses, bursites e lesões esportivas.",
+        detalhes: ["Infiltração com ácido hialurônico", "Retorno em 15 dias", "Particular acessível"],
+        preparo: "Trazer exames anteriores",
+        palavrasChave: "ortopedista coluna joelho dor lombar costas ombro tendinite bursite articulacao fratura infiltracao"
+      },
+      {
+        titulo: "Pediatria e puericultura",
+        categoria: "Consultas Médicas",
+        descricao: "Acompanhamento do peso e crescimento da criança, alimentação infantil, orientação vacinal, febre e tosse.",
+        detalhes: ["Espaço kids", "Desde o nascimento", "Atendimento humanizado"],
+        preparo: "Trazer caderneta de vacinação",
+        palavrasChave: "pediatra bebe crianca vacinas peso crescimento tosse febre desenvolvimento"
+      },
+      {
+        titulo: "Ultrassonografia geral e Doppler",
+        categoria: "Exames Diagnósticos",
+        descricao: "Abdome total, vias urinárias, tireoide, mamas, próstata, transvaginal e Doppler colorido vascular.",
+        detalhes: ["Laudo em até 24h", "Aparelho HD de alta definição", "Imagens digitais"],
+        preparo: "Jejum de 6h para abdome",
+        palavrasChave: "ultrassom usg doppler ecografia abdome tireoide mama prostata transvaginal rins figado"
+      },
+      {
+        titulo: "Exames de sangue, urina e fezes",
+        categoria: "Exames Diagnósticos",
+        descricao: "Hemograma completo, glicemia, perfil lipídico, hormônios da tireoide (TSH/T4), PSA e beta-HCG com resultado no celular.",
+        detalhes: ["Coleta a partir das 7h", "Sem fila com agendamento", "Desjejum cortesia"],
+        preparo: "Jejum orientado na marcação",
+        palavrasChave: "sangue hemograma urina glicemia colesterol psa gravidez bhcg plaquetas glicose jejum fezes"
+      },
+      {
+        titulo: "Infiltração articular no joelho e ombro",
+        categoria: "Procedimentos",
+        descricao: "Aplicação guiada de ácido hialurônico (viscossuplementação) e anti-inflamatórios para alívio de dor e artrose.",
+        detalhes: ["Procedimento no consultório", "Alívio rápido e duradouro", "Feito por ortopedista"],
+        preparo: "Repouso relativo de 24h",
+        palavrasChave: "infiltracao joelho ombro acido hialuronico artrose desgaste dor cartilagem"
+      },
+      {
+        titulo: "Check-up preventivo completo (Sangue + ECG)",
+        categoria: "Check-ups",
+        descricao: "Bateria de 14 exames laboratoriais essenciais, eletrocardiograma e consulta de retorno com cardiologista.",
+        detalhes: ["Tudo em uma única manhã", "Parcelamento em até 6x", "Relatório unificado"],
+        preparo: "Jejum de 8 horas",
+        palavrasChave: "checkup rotina anual preventivo sangue eletro pacote geral saude"
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      ligarDadosDaPagina();
+      iniciarCatalogo();
+      atualizarStatus();
+      setInterval(atualizarStatus, 60000);
+
+      const elAno = document.getElementById("ano-atual");
+      if (elAno) elAno.textContent = new Date().getFullYear();
+    });
+
+    /* Controle do status aberto/fechado em tempo real */
+    const HORARIOS = { 0: null, 1: [7, 19], 2: [7, 19], 3: [7, 19], 4: [7, 19], 5: [7, 19], 6: [7, 13] };
+    const NOMES_DIA = ["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"];
+
+    function atualizarStatus() {
+      const el = document.getElementById("status-aberto");
+      if (!el) return;
+
+      const partes = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/Sao_Paulo", weekday: "short", hour: "numeric", minute: "numeric", hourCycle: "h23"
+      }).formatToParts(new Date());
+      const get = (t) => partes.find(p => p.type === t).value;
+      const dia = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(get("weekday"));
+      const agora = Number(get("hour")) + Number(get("minute")) / 60;
+
+      const hoje = HORARIOS[dia];
+      const hh = (h) => String(h).padStart(2, "0") + ":00";
+
+      if (hoje && agora >= hoje[0] && agora < hoje[1]) {
+        el.dataset.open = "true";
+        el.textContent = `Aberto agora • Fecha às ${hh(hoje[1])}`;
+        return;
+      }
+
+      el.dataset.open = "false";
+      for (let i = 0; i < 8; i++) {
+        const d = (dia + i) % 7;
+        const h = HORARIOS[d];
+        if (!h) continue;
+        if (i === 0 && agora >= h[0]) continue;
+        const quando = i === 0 ? "hoje" : i === 1 ? "amanhã" : NOMES_DIA[d];
+        el.textContent = `Fechado no momento • Abre ${quando} às ${hh(h[0])}`;
+        return;
+      }
+    }
+
+    function urlWhats(mensagem) {
+      return `https://wa.me/${CLINICA_CONFIG.whatsappNumero}?text=${encodeURIComponent(mensagem)}`;
+    }
+
+    function ligarDadosDaPagina() {
+      document.querySelectorAll("[data-config]").forEach(el => {
+        el.textContent = CLINICA_CONFIG[el.dataset.config];
+      });
+
+      const links = {
+        whatsapp: urlWhats(CLINICA_CONFIG.mensagemPadraoWhats),
+        tel: `tel:${CLINICA_CONFIG.telefoneFixoLink}`,
+        mailto: `mailto:${CLINICA_CONFIG.email}`,
+        instagram: CLINICA_CONFIG.instagramUrl,
+        facebook: CLINICA_CONFIG.facebookUrl,
+        rota: CLINICA_CONFIG.googleMapsRotaUrl
+      };
+      document.querySelectorAll("[data-link]").forEach(el => {
+        el.href = links[el.dataset.link];
+      });
+    }
+
+    function iniciarCatalogo() {
+      const lista = document.getElementById("cards-grid");
+      const busca = document.getElementById("search-input");
+      const contador = document.getElementById("results-count");
+      const vazio = document.getElementById("no-results-state");
+      const reset = document.getElementById("reset-filters-btn");
+      const botoes = document.querySelectorAll("#category-filters button");
+
+      let categoria = "Todas";
+      let termo = "";
+
+      const limpar = (s) => (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+      function marcarFiltro(valor) {
+        botoes.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.category === valor)));
+      }
+
+      function renderizar() {
+        const t = limpar(termo).trim();
+
+        const itens = catalogo.filter(item => {
+          if (categoria !== "Todas" && item.categoria !== categoria) return false;
+          if (!t) return true;
+          return limpar(`${item.titulo} ${item.categoria} ${item.descricao} ${item.detalhes.join(" ")} ${item.preparo} ${item.palavrasChave}`).includes(t);
+        });
+
+        contador.textContent = itens.length === 1 ? "1 serviço disponível" : `${itens.length} serviços disponíveis`;
+        lista.hidden = itens.length === 0;
+        vazio.hidden = itens.length > 0;
+
+        lista.innerHTML = itens.map(item => {
+          const msg = `Olá! Gostaria de consultar valores, preparo e horários para ${item.titulo} na ${CLINICA_CONFIG.nome}.`;
+          const badgesHtml = item.detalhes.map(d => `<span class="badge">${esc(d)}</span>`).join("");
+          const preparoHtml = item.preparo ? `<span class="badge highlight">Preparo: ${esc(item.preparo)}</span>` : "";
+
+          return `
+            <article class="item" style="--cat: var(${CORES[item.categoria] || "--c-consulta"})">
+              <div>
+                <p class="cat">${ROTULOS[item.categoria] || item.categoria}</p>
+                <h3>${esc(item.titulo)}</h3>
+                <p class="desc">${esc(item.descricao)}</p>
+                <div class="badges-row">
+                  ${preparoHtml}
+                  ${badgesHtml}
+                </div>
+              </div>
+              <div>
+                <a class="btn btn-line" href="${urlWhats(msg)}" target="_blank" rel="noopener noreferrer"
+                   aria-label="Consultar ${esc(item.titulo)} no WhatsApp">Consultar no WhatsApp →</a>
+              </div>
+            </article>`;
+        }).join("");
+      }
+
+      busca.addEventListener("input", (e) => {
+        termo = e.target.value;
+        renderizar();
+      });
+
+      botoes.forEach(btn => {
+        btn.addEventListener("click", () => {
+          categoria = btn.dataset.category;
+          marcarFiltro(categoria);
+          renderizar();
+        });
+      });
+
+      reset.addEventListener("click", () => {
+        busca.value = "";
+        termo = "";
+        categoria = "Todas";
+        marcarFiltro(categoria);
+        renderizar();
+        busca.focus();
+      });
+
+      renderizar();
+    }
+  </script>
+</body>
+</html>
